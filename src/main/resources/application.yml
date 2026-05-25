@@ -1,0 +1,61 @@
+server:
+  port: 9090
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: ai-chat-server
+
+  # 数据源（H2 内存库，开发用）
+  datasource:
+    url: jdbc:h2:mem:aichatdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  # H2 控制台（开发调试用，生产关闭）
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop   # 开发环境自动建表；生产改为 validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+
+  # 文件上传
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 50MB
+
+# JWT 配置
+jwt:
+  secret: ${JWT_SECRET:ai-chat-super-secret-key-change-in-production-must-be-at-least-256-bits}
+  access-token-expiration: 3600000       # 1 小时（毫秒）
+  refresh-token-expiration: 2592000000   # 30 天（毫秒）
+
+# AI 上游配置（Friday One-API / 任意 OpenAI 兼容接口）
+ai:
+  base-url: ${AI_BASE_URL:https://aigc.sankuai.com/v1/openai/native}
+  app-id: ${AI_APP_ID:}
+  default-model: ${AI_DEFAULT_MODEL:LongCat-8B-128K-Chat}
+  timeout: 60000
+
+# 文件存储（本地，生产可替换为 OSS）
+storage:
+  local:
+    path: ./uploads
+    base-url: http://localhost:9090/files
+
+# 日志
+logging:
+  level:
+    com.aichat: DEBUG
+    org.springframework.security: INFO
