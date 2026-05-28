@@ -7,9 +7,9 @@ spring:
   application:
     name: ai-chat-server
 
-  # 数据源（H2 内存库，开发用）
+  # 数据源（H2 文件库，数据持久化到磁盘，重启不丢失）
   datasource:
-    url: jdbc:h2:mem:aichatdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    url: jdbc:h2:file:./data/aichatdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
     driver-class-name: org.h2.Driver
     username: sa
     password:
@@ -22,7 +22,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop   # 开发环境自动建表；生产改为 validate
+      ddl-auto: update   # update：有表则复用，无表则新建，不删数据
     show-sql: true
     properties:
       hibernate:
